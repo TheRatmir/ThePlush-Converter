@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Абеме | Конвертер скинов Minecraft</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
+  <style>
+    :root {
+      --primary: #2962ff;
+      --primary-light: #448aff;
+      --secondary: #00bcd4;
+      --background: #121212;
+      --card: #1e1e1e;
+      --text: #e0e0e0;
+      --text-light: #9e9e9e;
+      --border: #333333;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #121212 100%);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      background: linear-gradient(90deg, #2962ff 0%, #00bcd4 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+      display: inline-block;
+    }
+
+    .subtitle {
+      color: var(--text-light);
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+    }
+
+    .instructions {
+      background: linear-gradient(145deg, #1a1a1a 0%, #1e1e1e 100%);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+    }
+
+    .instructions ol {
+      padding-left: 20px;
+    }
+
+    .instructions li {
+      margin-bottom: 10px;
+      position: relative;
+      padding-left: 15px;
+    }
+
+    .instructions li:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 6px;
+      height: 6px;
+      background: linear-gradient(90deg, #2962ff 0%, #00bcd4 100%);
+      border-radius: 50%;
+    }
+
+    .content-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .upload-section {
+      flex: 1;
+      min-width: 300px;
+      background: linear-gradient(145deg, #1a1a1a 0%, #1e1e1e 100%);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-section {
+      flex: 1;
+      min-width: 300px;
+      background: linear-gradient(145deg, #1a1a1a 0%, #1e1e1e 100%);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    .upload-btn-container {
+      margin-top: auto;
+      text-align: center;
+      padding-top: 20px;
+    }
+
+    .upload-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #2962ff 0%, #448aff 100%);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border: none;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 200px;
+    }
+
+    .upload-btn:hover {
+      background: linear-gradient(135deg, #448aff 0%, #5b9bff 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    #skinInput {
+      display: none;
+    }
+
+    canvas {
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      border: 1px solid var(--border);
+      margin-top: 10px;
+      background: linear-gradient(45deg, #2a2a2a 0%, #1f1f1f 100%);
+      border-radius: 5px;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .preview-title {
+      font-weight: 500;
+      margin-bottom: 15px;
+      color: var(--text);
+    }
+
+    .download-section {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #downloadBtn {
+      background: linear-gradient(135deg, #00bcd4 0%, #26c6da 100%);
+      color: #121212;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    #downloadBtn:hover {
+      background: linear-gradient(135deg, #26c6da 0%, #4dd0e1 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    #downloadBtn:disabled {
+      background: #424242;
+      color: #757575;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .file-info {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    h2 {
+      color: var(--primary-light);
+      margin-top: 0;
+      position: relative;
+      display: inline-block;
+    }
+
+    h2:after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, #2962ff 0%, transparent 100%);
+    }
+
+    .original-preview {
+      margin-top: 20px;
+      text-align: center;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .original-preview p {
+      margin-bottom: 10px;
+      color: var(--text-light);
+    }
+    
+    #originalPreviewCanvas {
+      width: 128px;
+      height: 128px;
+      border: 1px solid var(--border);
+      background: linear-gradient(45deg, #2a2a2a 0%, #1f1f1f 100%);
+      border-radius: 5px;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+      margin: 0 auto;
+    }
+
+    #3dContainer {
+      width: 100%;
+      height: 300px;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+
+    @media (max-width: 768px) {
+      .content-wrapper {
+        flex-direction: column;
+      }
+      
+      .upload-btn {
+        max-width: none;
+      }
+      
+      #3dContainer {
+        height: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Абеме</h1>
+      <p class="subtitle">Конвертер скинов Minecraft для плюшевых моделей</p>
+    </header>
+
+    <div class="instructions">
+      <ol>
+        <li>Загрузите PNG-скин стандартного размера (64×64 пикселя)</li>
+        <li>Система автоматически обработает текстуру</li>
+        <li>Скачайте результат кнопкой ниже</li>
+      </ol>
+    </div>
+
+    <div class="content-wrapper">
+      <div class="upload-section">
+        <h2>Загрузка скина</h2>
+        
+        <div class="original-preview">
+          <p>Загруженный скин:</p>
+          <canvas id="originalPreviewCanvas" width="64" height="64"></canvas>
+        </div>
+        
+        <div class="file-info" id="fileInfo">Файл не выбран</div>
+        
+        <div class="upload-btn-container">
+          <label for="skinInput" class="upload-btn">Выбрать файл</label>
+          <input type="file" id="skinInput" accept="image/png" />
+        </div>
+      </div>
+
+      <div class="preview-section">
+        <h2 class="preview-title">3D Просмотр</h2>
+        <div id="3dContainer"></div>
+        <p>Финальный результат (56×56):</p>
+        <canvas id="finalOutput" width="56" height="56"></canvas>
+      </div>
+    </div>
+
+    <div class="download-section">
+      <button id="downloadBtn" disabled>Скачать PNG</button>
+    </div>
+  </div>
+
+  <script>
+    let originalFileName = null;
+    let scene, camera, renderer, model;
+
+    // Инициализация 3D сцены
+    function init3DViewer() {
+      const container = document.getElementById('3dContainer');
+      
+      // Сцена
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x1a1a1a);
+      
+      // Камера
+      camera = new THREE.PerspectiveCamera(75, container.clientWidth / 300, 0.1, 1000);
+      camera.position.z = 5;
+      
+      // Рендерер
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(container.clientWidth, 300);
+      container.appendChild(renderer.domElement);
+      
+      // Освещение
+      const ambientLight = new THREE.AmbientLight(0x404040);
+      scene.add(ambientLight);
+      
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      directionalLight.position.set(1, 1, 1);
+      scene.add(directionalLight);
+      
+      // Контролы для вращения
+      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.25;
+      
+      // Создаем простую модель по умолчанию
+      createDefaultModel();
+      
+      // Анимация
+      function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+      }
+      animate();
+      
+      // Реакция на изменение размера
+      window.addEventListener('resize', () => {
+        camera.aspect = container.clientWidth / 300;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, 300);
+      });
+    }
+
+    function createDefaultModel() {
+      // Удаляем старую модель если есть
+      if (model) scene.remove(model);
+      
+      // Создаем простую тестовую модель (куб)
+      const geometry = new THREE.BoxGeometry(2, 2, 2);
+      const material = new THREE.MeshPhongMaterial({ 
+        color: 0x2962ff,
+        specular: 0x111111,
+        shininess: 30
+      });
+      model = new THREE.Mesh(geometry, material);
+      scene.add(model);
+    }
+
+    function loadCustomModel(skinTexture) {
+      // Удаляем старую модель если есть
+      if (model) scene.remove(model);
+      
+      // Создаем более сложную модель (игровой персонаж)
+      const bodyGeometry = new THREE.BoxGeometry(1.5, 2, 0.8);
+      const headGeometry = new THREE.BoxGeometry(1.2, 1.2, 1.2);
+      headGeometry.translate(0, 1.6, 0);
+      
+      const armGeometry = new THREE.BoxGeometry(0.6, 1.5, 0.6);
+      armGeometry.translate(-1.2, 0.5, 0);
+      
+      const legGeometry = new THREE.BoxGeometry(0.6, 1.2, 0.6);
+      legGeometry.translate(-0.5, -1.6, 0);
+      
+      // Объединяем геометрию
+      const mergedGeometry = new THREE.BufferGeometry();
+      const geometries = [bodyGeometry, headGeometry, armGeometry, legGeometry];
+      
+      // Применяем текстуру ко всем частям
+      const material = new THREE.MeshPhongMaterial({ 
+        map: skinTexture,
+        specular: 0x111111,
+        shininess: 30
+      });
+      
+      // Создаем модель
+      model = new THREE.Mesh(mergedGeometry, material);
+      
+      // Объединяем все геометрии
+      const merged = new THREE.BufferGeometryUtils.mergeBufferGeometries(geometries);
+      model.geometry = merged;
+      
+      scene.add(model);
+    }
+
+    document.getElementById('skinInput').addEventListener('change', function (event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      originalFileName = file.name;
+      document.getElementById('fileInfo').textContent = `Выбран файл: ${file.name}`;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const inputImage = new Image();
+        inputImage.src = e.target.result;
+        inputImage.onload = function () {
+          // Отображаем оригинальное изображение в превью
+          const originalPreview = document.getElementById('originalPreviewCanvas');
+          const originalCtx = originalPreview.getContext('2d');
+          originalCtx.imageSmoothingEnabled = false;
+          originalCtx.clearRect(0, 0, originalPreview.width, originalPreview.height);
+          originalCtx.drawImage(inputImage, 0, 0, originalPreview.width, originalPreview.height);
+
+          // Обработка для финального результата
+          const inputCanvas = document.createElement('canvas');
+          inputCanvas.width = 64;
+          inputCanvas.height = 64;
+
+          const inputCtx = inputCanvas.getContext('2d');
+          inputCtx.drawImage(inputImage, 0, 0);
+
+          // Верхняя область (64x16 → 56x14)
+          const region1 = inputCtx.getImageData(0, 0, 64, 16);
+          const temp1 = document.createElement('canvas');
+          temp1.width = 64;
+          temp1.height = 16;
+          const tempCtx1 = temp1.getContext('2d');
+          tempCtx1.putImageData(region1, 0, 0);
+
+          // Нижняя область (64x48 от y=16 → 32x24)
+          const region2 = inputCtx.getImageData(0, 16, 64, 48);
+          const temp2 = document.createElement('canvas');
+          temp2.width = 64;
+          temp2.height = 48;
+          const tempCtx2 = temp2.getContext('2d');
+          tempCtx2.putImageData(region2, 0, 0);
+
+          // Финальный холст 56x56
+          const finalCanvas = document.getElementById('finalOutput');
+          const finalCtx = finalCanvas.getContext('2d');
+          finalCtx.imageSmoothingEnabled = false;
+          finalCtx.clearRect(0, 0, 56, 56);
+
+          // Рисуем верхнюю область
+          finalCtx.drawImage(temp1, 0, 0, 64, 16, 0, 0, 56, 14);
+
+          // Рисуем нижнюю область слева снизу
+          finalCtx.drawImage(temp2, 0, 0, 64, 48, 0, 14, 32, 24);
+
+          // Создаем текстуру из загруженного изображения
+          const texture = new THREE.Texture(inputImage);
+          texture.needsUpdate = true;
+          
+          // Загружаем модель с этой текстурой
+          loadCustomModel(texture);
+
+          // Включаем кнопку скачивания после загрузки
+          document.getElementById('downloadBtn').disabled = false;
+        };
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById('downloadBtn').addEventListener('click', function () {
+      if (!originalFileName) return;
+
+      const canvas = document.getElementById('finalOutput');
+
+      // Разбиваем имя файла на имя и расширение
+      const dotIndex = originalFileName.lastIndexOf('.');
+      let baseName = originalFileName;
+      let extension = '';
+      if (dotIndex !== -1) {
+        baseName = originalFileName.substring(0, dotIndex);
+        extension = originalFileName.substring(dotIndex);
+      }
+
+      // Создаем имя с припиской _plush
+      const newFileName = baseName + '_plush' + extension;
+
+      // Создаем ссылку для скачивания
+      const link = document.createElement('a');
+      link.download = newFileName;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+
+    // Инициализируем 3D просмотр при загрузке
+    window.addEventListener('DOMContentLoaded', init3DViewer);
+  </script>
+</body>
+</html>
