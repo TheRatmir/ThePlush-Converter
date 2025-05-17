@@ -4,8 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Абеме | Конвертер скинов Minecraft</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
   <style>
     :root {
       --primary: #2962ff;
@@ -23,20 +21,20 @@
       background: linear-gradient(135deg, #0a0a0a 0%, #121212 100%);
       color: var(--text);
       margin: 0;
-      padding: 20px;
-      line-height: 1.6;
+      padding: 18px;
+      line-height: 1.5;
       min-height: 100vh;
     }
 
     .container {
-      max-width: 900px;
+      max-width: 810px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 18px;
     }
 
     header {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 27px;
     }
 
     h1 {
@@ -44,44 +42,44 @@
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      font-size: 2.5rem;
-      margin-bottom: 10px;
+      font-size: 2.25rem;
+      margin-bottom: 9px;
       font-weight: 700;
       display: inline-block;
     }
 
     .subtitle {
       color: var(--text-light);
-      font-size: 1.1rem;
-      margin-bottom: 30px;
+      font-size: 0.99rem;
+      margin-bottom: 27px;
     }
 
     .instructions {
       background: linear-gradient(145deg, #1a1a1a 0%, #1e1e1e 100%);
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 30px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      border-radius: 9px;
+      padding: 18px;
+      margin-bottom: 27px;
+      box-shadow: 0 7px 14px rgba(0, 0, 0, 0.3);
       border: 1px solid var(--border);
     }
 
     .instructions ol {
-      padding-left: 20px;
+      padding-left: 18px;
     }
 
     .instructions li {
-      margin-bottom: 10px;
+      margin-bottom: 9px;
       position: relative;
-      padding-left: 15px;
+      padding-left: 13.5px;
     }
 
     .instructions li:before {
       content: "";
       position: absolute;
       left: 0;
-      top: 8px;
-      width: 6px;
-      height: 6px;
+      top: 7px;
+      width: 5.4px;
+      height: 5.4px;
       background: linear-gradient(90deg, #2962ff 0%, #00bcd4 100%);
       border-radius: 50%;
     }
@@ -89,17 +87,17 @@
     .content-wrapper {
       display: flex;
       flex-wrap: wrap;
-      gap: 30px;
-      margin-bottom: 30px;
+      gap: 27px;
+      margin-bottom: 27px;
     }
 
     .upload-section {
       flex: 1;
-      min-width: 300px;
+      min-width: 270px;
       background: linear-gradient(145deg, #1a1a1a 0%, #1e1e1e 100%);
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      border-radius: 9px;
+      padding: 18px;
+      box-shadow: 0 7px 14px rgba(0, 0, 0, 0.3);
       border: 1px solid var(--border);
       display: flex;
       flex-direction: column;
@@ -107,41 +105,43 @@
 
     .preview-section {
       flex: 1;
-      min-width: 300px;
+      min-width: 270px;
       background: linear-gradient(145deg, #1a1a1a 0%, #1e1e1e 100%);
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      border-radius: 9px;
+      padding: 18px;
+      box-shadow: 0 7px 14px rgba(0, 0, 0, 0.3);
       text-align: center;
       border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
     }
 
     .upload-btn-container {
       margin-top: auto;
       text-align: center;
-      padding-top: 20px;
+      padding-top: 18px;
     }
 
     .upload-btn {
       display: inline-block;
       background: linear-gradient(135deg, #2962ff 0%, #448aff 100%);
       color: white;
-      padding: 12px 24px;
-      border-radius: 30px;
+      padding: 10.8px 21.6px;
+      border-radius: 27px;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 0.9rem;
       font-weight: 500;
       transition: all 0.3s ease;
       border: none;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 3.6px 5.4px rgba(0, 0, 0, 0.2);
       width: 100%;
-      max-width: 200px;
+      max-width: 180px;
     }
 
     .upload-btn:hover {
       background: linear-gradient(135deg, #448aff 0%, #5b9bff 100%);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+      transform: translateY(-1.8px);
+      box-shadow: 0 5.4px 10.8px rgba(0, 0, 0, 0.3);
     }
 
     #skinInput {
@@ -152,40 +152,35 @@
       image-rendering: pixelated;
       image-rendering: crisp-edges;
       border: 1px solid var(--border);
-      margin-top: 10px;
+      margin-top: 9px;
       background: linear-gradient(45deg, #2a2a2a 0%, #1f1f1f 100%);
-      border-radius: 5px;
-      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+      border-radius: 4.5px;
+      box-shadow: inset 0 0 9px rgba(0, 0, 0, 0.5);
     }
 
     .preview-title {
       font-weight: 500;
-      margin-bottom: 15px;
+      margin-bottom: 13.5px;
       color: var(--text);
-    }
-
-    .download-section {
-      text-align: center;
-      margin-top: 20px;
     }
 
     #downloadBtn {
       background: linear-gradient(135deg, #00bcd4 0%, #26c6da 100%);
       color: #121212;
-      padding: 15px 30px;
-      font-size: 1.1rem;
-      border-radius: 30px;
+      padding: 13.5px 27px;
+      font-size: 0.99rem;
+      border-radius: 27px;
       border: none;
       cursor: pointer;
       font-weight: 600;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 3.6px 5.4px rgba(0, 0, 0, 0.3);
     }
 
     #downloadBtn:hover {
       background: linear-gradient(135deg, #26c6da 0%, #4dd0e1 100%);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+      transform: translateY(-1.8px);
+      box-shadow: 0 5.4px 10.8px rgba(0, 0, 0, 0.4);
     }
 
     #downloadBtn:disabled {
@@ -197,9 +192,11 @@
     }
 
     .file-info {
-      margin-top: 15px;
-      font-size: 0.9rem;
+      margin-top: 13.5px;
+      font-size: 0.81rem;
       color: var(--text-light);
+      text-align: center;
+      padding: 7.2px 0;
     }
 
     h2 {
@@ -212,42 +209,59 @@
     h2:after {
       content: "";
       position: absolute;
-      bottom: -5px;
+      bottom: -4.5px;
       left: 0;
       width: 100%;
-      height: 2px;
+      height: 1.8px;
       background: linear-gradient(90deg, #2962ff 0%, transparent 100%);
     }
 
-    .original-preview {
-      margin-top: 20px;
-      text-align: center;
-      flex-grow: 1;
+    .preview-container {
       display: flex;
       flex-direction: column;
-    }
-    
-    .original-preview p {
-      margin-bottom: 10px;
-      color: var(--text-light);
-    }
-    
-    #originalPreviewCanvas {
-      width: 128px;
-      height: 128px;
-      border: 1px solid var(--border);
-      background: linear-gradient(45deg, #2a2a2a 0%, #1f1f1f 100%);
-      border-radius: 5px;
-      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-      margin: 0 auto;
+      flex-grow: 1;
     }
 
-    #3dContainer {
-      width: 100%;
-      height: 300px;
-      border-radius: 5px;
-      overflow: hidden;
-      margin-bottom: 15px;
+    .preview-label {
+      margin-bottom: 9px;
+      color: var(--text-light);
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0;
+    }
+
+    .preview-canvas-container {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #originalPreviewCanvas {
+      width: 201.6px;
+      height: 201.6px;
+      border: 1px solid var(--border);
+      background: linear-gradient(45deg, #2a2a2a 0%, #1f1f1f 100%);
+      border-radius: 4.5px;
+      box-shadow: inset 0 0 9px rgba(0, 0, 0, 0.5);
+    }
+
+    #finalOutput {
+      width: 201.6px;
+      height: 201.6px;
+    }
+
+    .final-preview-container {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .download-btn-container {
+      margin-top: auto;
+      padding-top: 18px;
     }
 
     @media (max-width: 768px) {
@@ -258,9 +272,11 @@
       .upload-btn {
         max-width: none;
       }
-      
-      #3dContainer {
-        height: 250px;
+
+      #originalPreviewCanvas,
+      #finalOutput {
+        width: 151.2px;
+        height: 151.2px;
       }
     }
   </style>
@@ -284,9 +300,11 @@
       <div class="upload-section">
         <h2>Загрузка скина</h2>
         
-        <div class="original-preview">
-          <p>Загруженный скин:</p>
-          <canvas id="originalPreviewCanvas" width="64" height="64"></canvas>
+        <div class="preview-container">
+          <div class="preview-label">Загруженный скин (64×64):</div>
+          <div class="preview-canvas-container">
+            <canvas id="originalPreviewCanvas" width="64" height="64"></canvas>
+          </div>
         </div>
         
         <div class="file-info" id="fileInfo">Файл не выбран</div>
@@ -298,121 +316,22 @@
       </div>
 
       <div class="preview-section">
-        <h2 class="preview-title">3D Просмотр</h2>
-        <div id="3dContainer"></div>
-        <p>Финальный результат (56×56):</p>
-        <canvas id="finalOutput" width="56" height="56"></canvas>
+        <h2 class="preview-title">Результат обработки</h2>
+        <div class="final-preview-container">
+          <div class="preview-label">Финальный результат (56×56):</div>
+          <div class="preview-canvas-container">
+            <canvas id="finalOutput" width="56" height="56"></canvas>
+          </div>
+          <div class="download-btn-container">
+            <button id="downloadBtn" disabled>Скачать PNG</button>
+          </div>
+        </div>
       </div>
-    </div>
-
-    <div class="download-section">
-      <button id="downloadBtn" disabled>Скачать PNG</button>
     </div>
   </div>
 
   <script>
     let originalFileName = null;
-    let scene, camera, renderer, model;
-
-    // Инициализация 3D сцены
-    function init3DViewer() {
-      const container = document.getElementById('3dContainer');
-      
-      // Сцена
-      scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x1a1a1a);
-      
-      // Камера
-      camera = new THREE.PerspectiveCamera(75, container.clientWidth / 300, 0.1, 1000);
-      camera.position.z = 5;
-      
-      // Рендерер
-      renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setSize(container.clientWidth, 300);
-      container.appendChild(renderer.domElement);
-      
-      // Освещение
-      const ambientLight = new THREE.AmbientLight(0x404040);
-      scene.add(ambientLight);
-      
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-      directionalLight.position.set(1, 1, 1);
-      scene.add(directionalLight);
-      
-      // Контролы для вращения
-      const controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.25;
-      
-      // Создаем простую модель по умолчанию
-      createDefaultModel();
-      
-      // Анимация
-      function animate() {
-        requestAnimationFrame(animate);
-        controls.update();
-        renderer.render(scene, camera);
-      }
-      animate();
-      
-      // Реакция на изменение размера
-      window.addEventListener('resize', () => {
-        camera.aspect = container.clientWidth / 300;
-        camera.updateProjectionMatrix();
-        renderer.setSize(container.clientWidth, 300);
-      });
-    }
-
-    function createDefaultModel() {
-      // Удаляем старую модель если есть
-      if (model) scene.remove(model);
-      
-      // Создаем простую тестовую модель (куб)
-      const geometry = new THREE.BoxGeometry(2, 2, 2);
-      const material = new THREE.MeshPhongMaterial({ 
-        color: 0x2962ff,
-        specular: 0x111111,
-        shininess: 30
-      });
-      model = new THREE.Mesh(geometry, material);
-      scene.add(model);
-    }
-
-    function loadCustomModel(skinTexture) {
-      // Удаляем старую модель если есть
-      if (model) scene.remove(model);
-      
-      // Создаем более сложную модель (игровой персонаж)
-      const bodyGeometry = new THREE.BoxGeometry(1.5, 2, 0.8);
-      const headGeometry = new THREE.BoxGeometry(1.2, 1.2, 1.2);
-      headGeometry.translate(0, 1.6, 0);
-      
-      const armGeometry = new THREE.BoxGeometry(0.6, 1.5, 0.6);
-      armGeometry.translate(-1.2, 0.5, 0);
-      
-      const legGeometry = new THREE.BoxGeometry(0.6, 1.2, 0.6);
-      legGeometry.translate(-0.5, -1.6, 0);
-      
-      // Объединяем геометрию
-      const mergedGeometry = new THREE.BufferGeometry();
-      const geometries = [bodyGeometry, headGeometry, armGeometry, legGeometry];
-      
-      // Применяем текстуру ко всем частям
-      const material = new THREE.MeshPhongMaterial({ 
-        map: skinTexture,
-        specular: 0x111111,
-        shininess: 30
-      });
-      
-      // Создаем модель
-      model = new THREE.Mesh(mergedGeometry, material);
-      
-      // Объединяем все геометрии
-      const merged = new THREE.BufferGeometryUtils.mergeBufferGeometries(geometries);
-      model.geometry = merged;
-      
-      scene.add(model);
-    }
 
     document.getElementById('skinInput').addEventListener('change', function (event) {
       const file = event.target.files[0];
@@ -469,13 +388,6 @@
           // Рисуем нижнюю область слева снизу
           finalCtx.drawImage(temp2, 0, 0, 64, 48, 0, 14, 32, 24);
 
-          // Создаем текстуру из загруженного изображения
-          const texture = new THREE.Texture(inputImage);
-          texture.needsUpdate = true;
-          
-          // Загружаем модель с этой текстурой
-          loadCustomModel(texture);
-
           // Включаем кнопку скачивания после загрузки
           document.getElementById('downloadBtn').disabled = false;
         };
@@ -506,9 +418,6 @@
       link.href = canvas.toDataURL('image/png');
       link.click();
     });
-
-    // Инициализируем 3D просмотр при загрузке
-    window.addEventListener('DOMContentLoaded', init3DViewer);
   </script>
 </body>
 </html>
